@@ -1,0 +1,212 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background-primary: #000000;
+  --background-deep: #0A0A0A;
+  --background-panel: #111111;
+  
+  --neon-blue: #00F5FF;
+  --neon-green: #00FFB2;
+  --neon-lime: #39FF14;
+  --neon-orange: #FF6A00;
+  --neon-orange-deep: #FF8C00;
+  --neon-yellow: #FFFF00;
+  --neon-yellow-deep: #FFD000;
+  --neon-red: #FF0033;
+  
+  --font-inter: 'Inter', system-ui, sans-serif;
+  --font-jetbrains: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--background-primary);
+  color: #ffffff;
+  font-family: var(--font-inter);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neon-blue);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-green);
+}
+
+/* Selection */
+::selection {
+  background-color: var(--neon-blue);
+  color: var(--background-primary);
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: 2px solid var(--neon-blue);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes data-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-data-pulse {
+  animation: data-pulse 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-gradient-flow {
+  background-size: 200% 200%;
+  animation: gradient-flow 8s ease infinite;
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+}
+
+.glow-green {
+  box-shadow: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+}
+
+.glow-orange {
+  box-shadow: 0 0 5px var(--neon-orange), 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 5px var(--neon-yellow-deep), 0 0 10px var(--neon-yellow-deep), 0 0 20px var(--neon-yellow-deep);
+}
+
+.glow-lime {
+  box-shadow: 0 0 5px var(--neon-lime), 0 0 10px var(--neon-lime), 0 0 20px var(--neon-lime);
+}
+
+/* Text glow */
+.text-glow-blue {
+  text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+}
+
+.text-glow-green {
+  text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+}
+
+.text-glow-orange {
+  text-shadow: 0 0 10px var(--neon-orange), 0 0 20px var(--neon-orange);
+}
+
+.text-glow-yellow {
+  text-shadow: 0 0 10px var(--neon-yellow-deep), 0 0 20px var(--neon-yellow-deep);
+}
+
+/* Neon border */
+.neon-border-blue {
+  border: 1px solid var(--neon-blue);
+  box-shadow: 0 0 5px var(--neon-blue), inset 0 0 5px var(--neon-blue);
+}
+
+.neon-border-green {
+  border: 1px solid var(--neon-green);
+  box-shadow: 0 0 5px var(--neon-green), inset 0 0 5px var(--neon-green);
+}
+
+.neon-border-orange {
+  border: 1px solid var(--neon-orange);
+  box-shadow: 0 0 5px var(--neon-orange), inset 0 0 5px var(--neon-orange);
+}
+
+.neon-border-yellow {
+  border: 1px solid var(--neon-yellow-deep);
+  box-shadow: 0 0 5px var(--neon-yellow-deep), inset 0 0 5px var(--neon-yellow-deep);
+}
+
+/* Background patterns */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(0, 245, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 245, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Utility classes */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
