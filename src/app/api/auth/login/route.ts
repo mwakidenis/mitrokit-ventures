@@ -1,11 +1,11 @@
 // src/app/api/auth/login/route.ts
 import { NextResponse } from 'next/server'
-import { createToken } from '@/lib/jwt' // Only import createToken here
+import { createToken } from '@/lib/jwt' // Only import createToken
 
-// Edge runtime for Cloudflare compatibility
+// Edge runtime for Cloudflare
 export const runtime = 'edge'
 
-// Mock users database - in production this would come from Prisma
+// Mock users database
 const users = [
   {
     id: '1',
@@ -16,7 +16,6 @@ const users = [
   }
 ]
 
-// Login handler
 export async function POST(request: Request) {
   try {
     const body = await request.json()
@@ -29,9 +28,7 @@ export async function POST(request: Request) {
       )
     }
 
-    // Find user by email
     const user = users.find(u => u.email === email)
-    
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'Invalid credentials' },
@@ -39,10 +36,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // For demo, accept 'admin123' as password
-    // In production, use bcrypt.compare(password, user.password)
+    // For demo: plain password check
     const isValid = password === 'admin123'
-    
     if (!isValid) {
       return NextResponse.json(
         { success: false, error: 'Invalid credentials' },
@@ -50,7 +45,6 @@ export async function POST(request: Request) {
       )
     }
 
-    // Generate JWT token
     const token = await createToken({
       userId: user.id,
       email: user.email,
