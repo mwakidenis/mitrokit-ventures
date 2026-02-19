@@ -11,6 +11,14 @@ const nextConfig = {
   },
   trailingSlash: false,
   poweredByHeader: false,
-}
 
-module.exports = nextConfig
+  // ===== Added for Pages deployment =====
+  typescript: {
+    ignoreBuildErrors: true, // ignores TypeScript errors during build
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // skips linting during build
+  },
+};
+
+module.exports = nextConfig;

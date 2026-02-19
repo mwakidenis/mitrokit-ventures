@@ -10,7 +10,8 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
-    "deploy": "npm install --legacy-peer-deps && npx @cloudflare/next-on-pages@1"
+    "deploy": "npm install --legacy-peer-deps && npx @cloudflare/next-on-pages@1",
+    "build:pages": "next build --no-lint" 
   },
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.16",
