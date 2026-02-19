@@ -1,5 +1,6 @@
+// src/app/api/auth/login/route.ts
 import { NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
+import { SignJWT, jwtVerify } from 'jose'
 
 // Edge runtime for Cloudflare compatibility
 export const runtime = 'edge'
@@ -9,14 +10,37 @@ const users = [
   {
     id: '1',
     email: 'admin@mitrokit.com',
-    password: '$2a$10$xQZ8jK9pL2mN4vR6tW8xY0zA1bC2dE3fG4hI5jK6lM7nO8pQ9rS', // password: admin123
+    password: '$2a$10$xQZ8jK9pL2mN4vR6tW8xY0zA1bC2dE3fG4hI5jK6lM7nO8pQ9rS', // bcrypt hash for admin123
     name: 'Mwaki Denis',
     role: 'ADMIN'
   }
 ]
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+// Edge-compatible secret
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+)
 
+// Function to create JWT token
+async function createToken(payload: object) {
+  return await new SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('7d') // token valid for 7 days
+    .sign(JWT_SECRET)
+}
+
+// Function to verify JWT token (optional, if needed)
+export async function verifyToken(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, JWT_SECRET)
+    return payload
+  } catch (err) {
+    console.error('Invalid token', err)
+    return null
+  }
+}
+
+// Login handler
 export async function POST(request: Request) {
   try {
     const body = await request.json()
@@ -39,10 +63,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // In production, verify password with bcrypt
-    // const isValid = await bcrypt.compare(password, user.password)
-    
     // For demo, accept 'admin123' as password
+    // In production, use bcrypt.compare(password, user.password)
     const isValid = password === 'admin123'
     
     if (!isValid) {
@@ -53,11 +75,11 @@ export async function POST(request: Request) {
     }
 
     // Generate JWT token
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    )
+    const token = await createToken({
+      userId: user.id,
+      email: user.email,
+      role: user.role
+    })
 
     return NextResponse.json({
       success: true,
