@@ -119,7 +119,6 @@ export default function Hero() {
           className="mb-12"
         >
           <div className="flex items-center justify-center gap-2 text-lg md:text-xl">
-            <span className="text-gray-400">I'm a</span>
             {roles.map((role, index) => (
               <motion.span
                 key={role.label}
