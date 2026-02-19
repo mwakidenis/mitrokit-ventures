@@ -1,10 +1,10 @@
 # Mitrokit Ventures
-<img width="1920" height="1080" alt="Screenshot 2026-02-19 155025" src="https://github.com/user-attachments/assets/b93df832-017c-48fe-b33e-62a2a64e0f1c" />
+<img width="1920" height="1080" alt="Screenshot 2026-02-19 225437" src="https://github.com/user-attachments/assets/503bbc9c-5c29-45cb-8225-415680c07837" />
 
 A modern, responsive business website built with Next.js 14, React, TypeScript, and Tailwind CSS. This project includes a comprehensive business website with sections for services, projects, testimonials, blog, FAQ, contact form, and more, along with an admin panel for content management.
 
 ## Features
-<img width="1920" height="1080" alt="Screenshot 2026-02-19 155120" src="https://github.com/user-attachments/assets/d15b0a7c-5f69-4298-b2bf-cc093776b5e2" />
+<img width="1920" height="1080" alt="Screenshot 2026-02-19 155025" src="https://github.com/user-attachments/assets/5dfbc55a-f3d7-4bd5-b1d8-6309463dbe6e" />
 
 ### Frontend Features
 - **Hero Section** - Eye-catching landing area with call-to-action
