@@ -1,9 +1,8 @@
 // src/app/api/auth/login/route.ts
 import { NextResponse } from 'next/server'
-import { createToken } from '@/lib/jwt' // Only import createToken
+import { createToken } from '@/lib/jwt' // Only import what you need
 
-// Edge runtime for Cloudflare
-export const runtime = 'edge'
+export const runtime = 'edge' // Cloudflare Edge runtime
 
 // Mock users database
 const users = [
@@ -16,10 +15,10 @@ const users = [
   }
 ]
 
+// POST handler only — do not export verifyToken or any other function
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const { email, password } = body
+    const { email, password } = await request.json()
 
     if (!email || !password) {
       return NextResponse.json(
@@ -29,16 +28,8 @@ export async function POST(request: Request) {
     }
 
     const user = users.find(u => u.email === email)
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid credentials' },
-        { status: 401 }
-      )
-    }
-
-    // For demo: plain password check
-    const isValid = password === 'admin123'
-    if (!isValid) {
+    if (!user || password !== 'admin123') {
+      // demo password check; replace with bcrypt.compare in production
       return NextResponse.json(
         { success: false, error: 'Invalid credentials' },
         { status: 401 }
