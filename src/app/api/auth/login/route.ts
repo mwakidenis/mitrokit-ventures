@@ -1,6 +1,6 @@
 // src/app/api/auth/login/route.ts
 import { NextResponse } from 'next/server'
-import { SignJWT, jwtVerify } from 'jose'
+import { createToken, verifyToken } from '@/lib/jwt'
 
 // Edge runtime for Cloudflare compatibility
 export const runtime = 'edge'
@@ -15,30 +15,6 @@ const users = [
     role: 'ADMIN'
   }
 ]
-
-// Edge-compatible secret
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production'
-)
-
-// Function to create JWT token
-async function createToken(payload: object) {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime('7d') // token valid for 7 days
-    .sign(JWT_SECRET)
-}
-
-// Function to verify JWT token (optional, if needed)
-export async function verifyToken(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET)
-    return payload
-  } catch (err) {
-    console.error('Invalid token', err)
-    return null
-  }
-}
 
 // Login handler
 export async function POST(request: Request) {
