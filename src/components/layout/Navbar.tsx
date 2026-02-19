@@ -75,7 +75,7 @@ export default function Navbar() {
               href="#contact"
               className="px-6 py-2 bg-transparent border border-neon-green text-neon-green rounded-lg hover:bg-neon-green hover:text-background-primary transition-all duration-300 glow-green"
             >
-              Hire Me
+              Hire Us
             </Link>
             <Link
               href="#projects"
@@ -121,7 +121,7 @@ export default function Navbar() {
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block w-full text-center px-6 py-2 bg-transparent border border-neon-green text-neon-green rounded-lg hover:bg-neon-green hover:text-background-primary transition-all duration-300"
                 >
-                  Hire Me
+                  Hire Us
                 </Link>
                 <Link
                   href="#projects"

@@ -6,11 +6,11 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Hexagon, Sparkles, Code, Cloud, Palette, Mail } from 'lucide-react'
 
 const roles = [
-  { label: 'Full-Stack Developer', icon: Code, color: 'text-neon-blue' },
-  { label: 'API Developer', icon: Code, color: 'text-neon-blue' },
-  { label: 'Cloud Expert', icon: Cloud, color: 'text-neon-green' },
-  { label: 'Digital Marketer', icon: Mail, color: 'text-neon-orange' },
-  { label: 'Graphics Designer', icon: Palette, color: 'text-neon-yellow' },
+  { label: 'Full-Stack Developers', icon: Code, color: 'text-neon-blue' },
+  { label: 'API Developers', icon: Code, color: 'text-neon-blue' },
+  { label: 'Cloud Experts', icon: Cloud, color: 'text-neon-green' },
+  { label: 'Digital Marketers', icon: Mail, color: 'text-neon-orange' },
+  { label: 'Graphics Designers', icon: Palette, color: 'text-neon-yellow' },
 ]
 
 export default function Hero() {
@@ -97,7 +97,7 @@ export default function Hero() {
           className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
         >
           <span className="bg-gradient-to-r from-neon-blue via-neon-green to-neon-blue bg-[length:200%_auto] animate-gradient-flow bg-clip-text text-transparent">
-            Hi, I'm Mwaki Denis 👋
+            Design With Us. Create Impact 
           </span>
         </motion.h1>
 
@@ -108,7 +108,7 @@ export default function Hero() {
           transition={{ delay: 0.5 }}
           className="text-xl md:text-2xl text-gray-300 mb-4"
         >
-          ✦ UI/UX Designer & Software Developer ✦
+          ✦ UI/UX Designer & Software Developers ✦
         </motion.p>
 
         {/* Role Animation */}
@@ -149,7 +149,7 @@ export default function Hero() {
             className="group px-8 py-4 bg-transparent border-2 border-neon-green text-neon-green rounded-lg font-semibold text-lg hover:bg-neon-green hover:text-background-primary transition-all duration-300 flex items-center gap-2"
             style={{ boxShadow: '0 0 10px rgba(0, 255, 178, 0.3)' }}
           >
-            Hire Me
+            Hire Us
             <motion.span
               animate={{ x: [0, 5, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}

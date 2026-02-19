@@ -9,7 +9,7 @@ const clients = [
   { name: 'MTN', color: '#FFD000' },
   { name: '9mobile', color: '#00F5FF' },
   { name: 'Startimes', color: '#00FFB2' },
-  { name: 'GoTV', color: '#FF8C00' },
+  { name: 'GoTV', color: 'rgb(255, 0, 136)' },
   { name: 'IBEDC', color: '#39FF14' },
   { name: 'Moniepoint', color: '#00F5FF' },
 ]
