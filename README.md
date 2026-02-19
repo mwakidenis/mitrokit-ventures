@@ -20,7 +20,7 @@ Mitrokit Ventures is a modern, responsive business website built with Next.js 14
 - App Development
 - Cyber Security
 
-**Location**: Nairobi, Kenya
+**Location**: Meru, Kenya
 
 **Contact**:
 - Email: contact@mitrokit.com
