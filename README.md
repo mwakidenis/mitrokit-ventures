@@ -24,7 +24,7 @@ Mitrokit Ventures is a modern, responsive business website built with Next.js 14
 
 **Contact**:
 - Email: contact@mitrokit.com
-- Phone: +1 234 567 890
+- Phone: +254 798 750 585
 
 **Founder/Author**: Mwaki Denis
 
