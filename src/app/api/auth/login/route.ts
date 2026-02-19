@@ -2,20 +2,18 @@
 import { NextResponse } from 'next/server'
 import { createToken } from '@/lib/jwt' // Only import what you need
 
-export const runtime = 'edge' // Cloudflare Edge runtime
+export const runtime = 'edge' // required for Cloudflare Edge
 
-// Mock users database
 const users = [
   {
     id: '1',
     email: 'admin@mitrokit.com',
-    password: '$2a$10$xQZ8jK9pL2mN4vR6tW8xY0zA1bC2dE3fG4hI5jK6lM7nO8pQ9rS', // bcrypt hash for admin123
+    password: '$2a$10$xQZ8jK9pL2mN4vR6tW8xY0zA1bC2dE3fG4hI5jK6lM7nO8pQ9rS', // bcrypt hash
     name: 'Mwaki Denis',
     role: 'ADMIN'
   }
 ]
 
-// POST handler only — do not export verifyToken or any other function
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json()
@@ -29,7 +27,7 @@ export async function POST(request: Request) {
 
     const user = users.find(u => u.email === email)
     if (!user || password !== 'admin123') {
-      // demo password check; replace with bcrypt.compare in production
+      // demo password check
       return NextResponse.json(
         { success: false, error: 'Invalid credentials' },
         { status: 401 }
