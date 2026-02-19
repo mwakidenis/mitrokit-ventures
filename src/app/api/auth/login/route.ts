@@ -1,6 +1,6 @@
 // src/app/api/auth/login/route.ts
 import { NextResponse } from 'next/server'
-import { createToken, verifyToken } from '@/lib/jwt'
+import { createToken } from '@/lib/jwt' // Only import createToken here
 
 // Edge runtime for Cloudflare compatibility
 export const runtime = 'edge'
