@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
+const path = require('path');
+
 const nextConfig = {
-  output: 'standalone',
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -21,6 +22,9 @@ const nextConfig = {
   },
   trailingSlash: false,
   poweredByHeader: false,
+  
+  // Fix for lockfile warning
+  outputFileTracingRoot: path.join(__dirname, '..'),
 
   // ===== Added for Cloudflare Pages deployment =====
   typescript: {
