@@ -30,7 +30,7 @@ const experiences = [
     title: 'Junior Developer',
     company: 'StartupHub',
     location: 'Nairobi, Kenya',
-    period: '2013 - 2024',
+    period: '2022 - 2024',
     description: 'Developed responsive websites and maintained existing web applications.',
     technologies: ['JavaScript', 'PHP', 'MySQL', 'Linux'],
     color: '#FF6A00',
