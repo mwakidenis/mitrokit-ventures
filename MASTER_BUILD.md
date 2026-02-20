@@ -386,3 +386,7 @@ Secure.
 Interactive.  
 AI-enhanced.  
 Mitrokit-branded.
+
+---
+
+Proudly ❤ made by **mwakidenis**
