@@ -4,6 +4,19 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { GraduationCap, Award, Calendar, MapPin } from 'lucide-react'
 
+const education = [
+  {
+    id: 1,
+    degree: 'BSc Computer Science',
+    school: 'Meru University of Science and Technology',
+    location: 'Meru, Kenya',
+    year: '2024-2028',
+    description: 'Focused on algorithms, full-stack development, software architecture, and scalable systems.',
+    achievements: ["Dean's List", 'Top Project Award'],
+    color: '#00FFB2',
+  },
+]
+
 const certifications = [
   {
     id: 1,
