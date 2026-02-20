@@ -1,8 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
   images: {
-    domains: ['localhost', 'res.cloudinary.com', 'images.unsplash.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
   },
   experimental: {
     serverActions: {
@@ -12,12 +22,12 @@ const nextConfig = {
   trailingSlash: false,
   poweredByHeader: false,
 
-  // ===== Added for Pages deployment =====
+  // ===== Added for Cloudflare Pages deployment =====
   typescript: {
-    ignoreBuildErrors: true, // ignores TypeScript errors during build
+    ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true, // skips linting during build
+    ignoreDuringBuilds: true,
   },
 };
 
