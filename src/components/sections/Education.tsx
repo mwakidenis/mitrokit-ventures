@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { GraduationCap, Award, Calendar, MapPin } from 'lucide-react'
+import { GraduationCap, Award, Calendar, MapPin, ExternalLink } from 'lucide-react'
 
 const portfolio = {
   title: 'Portfolio & Certificates',
@@ -19,6 +19,7 @@ const education = [
     description: 'Focused on algorithms, full-stack development, software architecture, and scalable systems.',
     achievements: ["Dean's List", 'Top Project Award'],
     color: '#00FFB2',
+    portfolio: 'https://mwakidenis.pages.dev',
   },
 ]
 
@@ -137,6 +138,19 @@ export default function Education() {
                       </span>
                     ))}
                   </div>
+                  
+                  {/* Portfolio Link */}
+                  {edu.portfolio && (
+                    <a 
+                      href={edu.portfolio}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 mt-4 px-4 py-2 text-sm rounded-lg bg-neon-blue/20 text-neon-blue hover:bg-neon-blue/30 transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      View Portfolio
+                    </a>
+                  )}
                 </div>
               </motion.div>
             ))}

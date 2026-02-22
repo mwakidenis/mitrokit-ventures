@@ -26,10 +26,7 @@ const nextConfig = {
   // Fix for lockfile warning
   outputFileTracingRoot: path.join(__dirname, '..'),
 
-  // ===== Required for OpenNext/Cloudflare Pages =====
-  output: 'standalone',
-
-  // ===== Added for Cloudflare Pages deployment =====
+  // ===== Cloudflare Pages deployment =====
   typescript: {
     ignoreBuildErrors: true,
   },

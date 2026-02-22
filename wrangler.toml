@@ -1,6 +1,6 @@
 name = "mitrokit-ventures"
-compatibility_date = "2024-01-01"
+compatibility_date = "2026-02-22"
 pages_build_output_dir = ".open-next/assets"
 
 [vars]
-NEXT_PUBLIC_SITE_URL = "https://mitrokit-ventures.pages.dev"
+NEXT_PUBLIC_SITE_URL = "https://mitrokit-ventures-llc.pages.dev/"
