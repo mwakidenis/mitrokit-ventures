@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { GraduationCap, Award, Calendar, MapPin } from 'lucide-react'
 
+const portfolio = {
+  title: 'Portfolio & Certificates',
+  url: 'https://mwakidenis.pages.dev/',
+}
+
 const education = [
   {
     id: 1,
