@@ -36,8 +36,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: mitrokit-ventures-llc
-          directory: .vercel/output/static
-          # Optional: These vars can also be set in Cloudflare dashboard
-          # kvNamespaces: ${{ secrets.CLOUDFLARE_KV_NAMESPACES }}
-          # durableObjectNamespaces: ${{ secrets.CLOUDFLARE_DO_NAMESPACES }}
-          # bucketNames: ${{ secrets.CLOUDFLARE_BUCKET_NAMES }}
+          # Cloudflare Pages expects output in the _output directory for Next.js
+          directory: .next
