@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -16,7 +18,7 @@ const nextConfig = {
   trailingSlash: false,
   poweredByHeader: false,
   
-  // Ignore TypeScript errors during build (Vercel)
+  // Ignore TypeScript errors during build
   typescript: {
     ignoreBuildErrors: true,
   },
