@@ -62,7 +62,7 @@ const tools = [
   { name: 'Linux', icon: Terminal },
 ]
 
-function Server(props) {
+function Server(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
