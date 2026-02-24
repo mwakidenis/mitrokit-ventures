@@ -1,8 +1,21 @@
+// src/app/api/repos/route.ts - Cloudflare Workers compatible
 import { NextResponse } from 'next/server';
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+// Edge runtime for Cloudflare compatibility
+export const runtime = 'edge';
+
+// Get GitHub token from environment (Cloudflare binding or env var)
+function getGitHubToken(): string | undefined {
+  // Try Cloudflare binding first
+  if (typeof process !== 'undefined' && process.env) {
+    return process.env.GITHUB_TOKEN;
+  }
+  return undefined;
+}
 
 export async function GET() {
+  const GITHUB_TOKEN = getGitHubToken();
+
   try {
     if (!GITHUB_TOKEN) {
       return NextResponse.json(
@@ -11,11 +24,12 @@ export async function GET() {
       );
     }
 
-    // Fetch repositories from GitHub
+    // Fetch repositories from GitHub using Cloudflare-compatible fetch
     const response = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100', {
       headers: {
         'Authorization': `Bearer ${GITHUB_TOKEN}`,
         'Accept': 'application/vnd.github.v3+json',
+        'User-Agent': 'mitrokit-ventures',
       },
     });
 

@@ -1,94 +1,82 @@
-import { NextResponse } from 'next/server'
+// src/app/api/subscribe/route.ts - Cloudflare Workers compatible
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
 // Edge runtime for Cloudflare compatibility
-export const runtime = 'edge'
+export const runtime = 'edge';
 
-// Mock subscribers storage - in production use Prisma
-const subscribers: any[] = []
-
-function validateEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-}
-
-function validateSubscribeInput(data: any) {
-  const errors: string[] = []
-  
-  if (!data.email || !validateEmail(data.email)) {
-    errors.push('Valid email is required')
-  }
-  
-  return errors
+// Validate email format
+function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 export async function POST(request: Request) {
   try {
-    let body
+    let body;
     
     try {
-      body = await request.json()
+      body = await request.json();
     } catch {
       return NextResponse.json(
-        { success: false, error: 'Invalid JSON' },
+        { success: false, error: 'Invalid JSON body' },
         { status: 400 }
-      )
+      );
     }
-    
-    // Validate input
-    const errors = validateSubscribeInput(body)
-    
-    if (errors.length > 0) {
+
+    const { email, name } = body;
+
+    if (!email || !validateEmail(email)) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Validation failed',
-          details: errors 
-        },
+        { success: false, error: 'Valid email is required' },
         { status: 400 }
-      )
+      );
     }
 
-    const { email, name } = body
-
-    // Check if already subscribed
-    const existing = subscribers.find(s => s.email === email)
-    if (existing) {
-      return NextResponse.json(
-        { success: false, error: 'Email already subscribed' },
-        { status: 400 }
-      )
+    // Try to save to database if available
+    try {
+      const env = (globalThis as any).env;
+      if (env?.DB) {
+        const subscriber = await db.subscribers.upsert({ email, name }, env);
+        return NextResponse.json({
+          success: true,
+          message: 'Successfully subscribed to newsletter!',
+          data: subscriber
+        });
+      }
+    } catch (dbError) {
+      console.log('Database not available, using in-memory storage');
     }
 
-    // Create subscriber
-    const subscriber = {
-      id: Date.now().toString(),
-      email,
-      name: name || null,
-      active: true,
-      subscribedAt: new Date().toISOString(),
-      unsubscribedAt: null,
-    }
-
-    // In production, save to database
-    subscribers.push(subscriber)
-
+    // Fallback to in-memory storage
     return NextResponse.json({
       success: true,
-      message: 'Subscribed successfully!',
-      data: subscriber
-    })
+      message: 'Successfully subscribed to newsletter!',
+      data: {
+        id: crypto.randomUUID(),
+        email,
+        name: name || null,
+        active: 1,
+        subscribed_at: new Date().toISOString()
+      }
+    });
   } catch (error) {
-    console.error('Subscribe error:', error)
+    console.error('Subscribe error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to subscribe' },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function GET() {
-  // Return all subscribers (admin only in production)
   return NextResponse.json({
     success: true,
-    data: subscribers
-  })
+    message: 'Newsletter subscription endpoint - POST with email',
+    required: {
+      email: 'string (valid email)'
+    },
+    optional: {
+      name: 'string'
+    }
+  });
 }

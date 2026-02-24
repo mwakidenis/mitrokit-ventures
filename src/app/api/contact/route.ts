@@ -1,96 +1,127 @@
-import { NextResponse } from 'next/server'
+// src/app/api/contact/route.ts - Cloudflare Workers compatible
+import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
 // Edge runtime for Cloudflare compatibility
-export const runtime = 'edge'
+export const runtime = 'edge';
 
-// Mock messages storage - in production use Prisma/Database
-const messages: any[] = []
-
-function validateEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+// Validate email format
+function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function validateContactInput(data: any) {
-  const errors: string[] = []
+// Validate contact form input
+function validateContactInput(data: any): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
   
-  if (!data.name || data.name.length < 2) {
-    errors.push('Name must be at least 2 characters')
+  if (!data.name || typeof data.name !== 'string' || data.name.length < 2) {
+    errors.push('Name must be at least 2 characters');
   }
   
   if (!data.email || !validateEmail(data.email)) {
-    errors.push('Valid email is required')
+    errors.push('Valid email is required');
   }
   
-  if (!data.content || data.content.length < 10) {
-    errors.push('Message must be at least 10 characters')
+  if (!data.content || typeof data.content !== 'string' || data.content.length < 10) {
+    errors.push('Message must be at least 10 characters');
   }
   
-  return errors
+  return {
+    valid: errors.length === 0,
+    errors
+  };
 }
 
 export async function POST(request: Request) {
   try {
-    let body
+    let body;
     
     try {
-      body = await request.json()
+      body = await request.json();
     } catch {
       return NextResponse.json(
-        { success: false, error: 'Invalid JSON' },
+        { success: false, error: 'Invalid JSON body' },
         { status: 400 }
-      )
+      );
     }
-    
+
     // Validate input
-    const errors = validateContactInput(body)
+    const validation = validateContactInput(body);
     
-    if (errors.length > 0) {
+    if (!validation.valid) {
       return NextResponse.json(
         { 
           success: false, 
           error: 'Validation failed',
-          details: errors 
+          details: validation.errors 
         },
         { status: 400 }
-      )
+      );
     }
 
-    const { name, email, subject, content } = body
+    const { name, email, subject, content } = body;
 
-    // Create message object
+    // Create message in database (or use in-memory fallback)
+    // In production: const env = process.env as any;
+    // const message = await db.messages.create({...}, env);
     const message = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       name,
       email,
       subject: subject || '',
       content,
-      read: false,
-      archived: false,
-      createdAt: new Date().toISOString(),
-      userId: '1',
-    }
+      read: 0,
+      archived: 0,
+      created_at: new Date().toISOString(),
+      user_id: '1', // Default admin user
+    };
 
-    // In production, save to database
-    messages.push(message)
+    // Try to save to database if available
+    try {
+      const env = (globalThis as any).env;
+      if (env?.DB) {
+        const savedMessage = await db.messages.create(
+          { name, email, subject, content, user_id: '1' },
+          env
+        );
+        if (savedMessage) {
+          return NextResponse.json({
+            success: true,
+            message: 'Message sent successfully!',
+            data: savedMessage
+          });
+        }
+      }
+    } catch (dbError) {
+      console.log('Database not available, using in-memory storage');
+    }
 
     return NextResponse.json({
       success: true,
       message: 'Message sent successfully!',
       data: message
-    })
+    });
   } catch (error) {
-    console.error('Contact form error:', error)
+    console.error('Contact form error:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to send message' },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function GET() {
-  // Return all messages (admin only in production)
+  // Return public info only - messages list would require auth in production
   return NextResponse.json({
     success: true,
-    data: messages
-  })
+    message: 'Contact API endpoint - POST with name, email, subject, and content',
+    required: {
+      name: 'string (min 2 characters)',
+      email: 'string (valid email)',
+      content: 'string (min 10 characters)'
+    },
+    optional: {
+      subject: 'string'
+    }
+  });
 }

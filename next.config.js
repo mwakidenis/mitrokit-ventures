@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,6 +12,7 @@ const nextConfig = {
         hostname: 'images.unsplash.com',
       },
     ],
+    unoptimized: true, // Required for Cloudflare
   },
   trailingSlash: false,
   poweredByHeader: false,
@@ -24,6 +24,11 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-};
+  
+  // Cloudflare Workers experimental config
+  experimental: {
+    // No serverActions - not needed for API routes
+  },
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig

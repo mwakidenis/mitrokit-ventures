@@ -1,70 +1,331 @@
-// Cloudflare D1 compatible database utility
-// Works with D1 (SQLite) and can be adapted for PostgreSQL
+// src/lib/db.ts - Cloudflare D1 Database Utility
+// Uses D1 binding for Cloudflare Workers, falls back to mock for development
 
+interface Env {
+  DB: D1Database;
+}
+
+// Type for user records
 interface User {
   id: string;
   email: string;
-  password: string;
+  password_hash: string;
   name: string | null;
   role: string;
+  created_at: string;
 }
 
-// Demo users - in production, replace with D1 database queries
-const demoUsers: User[] = [
+// Type for message records
+interface Message {
+  id: string;
+  name: string;
+  email: string;
+  subject: string | null;
+  content: string;
+  read: number;
+  archived: number;
+  created_at: string;
+  user_id: string;
+}
+
+// Type for subscriber records
+interface Subscriber {
+  id: string;
+  email: string;
+  name: string | null;
+  active: number;
+  subscribed_at: string;
+  unsubscribed_at: string | null;
+}
+
+// Demo users for development/testing (when D1 is not available)
+const DEMO_USERS: User[] = [
   {
     id: '1',
     email: 'admin@mitrokit.com',
-    password: '$2a$10$xQZ8jK9pL2mN4vR6tW8xY0zA1bC2dE3fG4hI5jK6lM7nO8pQ9rS', // admin123 (bcrypt hash)
+    password_hash: 'admin123', // In production, use bcrypt hashes
     name: 'Mwaki Denis',
-    role: 'ADMIN'
+    role: 'ADMIN',
+    created_at: new Date().toISOString(),
   }
 ];
 
-// Database operations
+// In-memory storage for development
+let DEMO_MESSAGES: Message[] = [];
+let DEMO_SUBSCRIBERS: Subscriber[] = [];
+
+/**
+ * Get the D1 database binding from the environment
+ */
+function getDb(env: Env): D1Database | null {
+  return env.DB || null;
+}
+
+/**
+ * Check if we're running in Cloudflare Workers environment
+ */
+function isCloudflare(): boolean {
+  return typeof process === 'undefined' || !process.env.VERCEL;
+}
+
+/**
+ * Database operations - User
+ */
 export const db = {
-  // User operations
   users: {
-    findUnique: async (params: { where: { email?: string; id?: string } }) => {
-      const { where } = params;
-      if (where.email) {
-        return demoUsers.find(u => u.email === where.email) || null;
+    /**
+     * Find a user by email
+     */
+    findByEmail: async (email: string, env: Env): Promise<User | null> => {
+      const d1 = getDb(env);
+      
+      if (d1) {
+        try {
+          const result = await d1.prepare(
+            'SELECT * FROM users WHERE email = ?'
+          ).bind(email).first<User>();
+          return result || null;
+        } catch (error) {
+          console.error('D1 query error:', error);
+        }
       }
-      if (where.id) {
-        return demoUsers.find(u => u.id === where.id) || null;
+      
+      // Fallback to demo users
+      return DEMO_USERS.find(u => u.email === email) || null;
+    },
+
+    /**
+     * Find a user by ID
+     */
+    findById: async (id: string, env: Env): Promise<User | null> => {
+      const d1 = getDb(env);
+      
+      if (d1) {
+        try {
+          const result = await d1.prepare(
+            'SELECT * FROM users WHERE id = ?'
+          ).bind(id).first<User>();
+          return result || null;
+        } catch (error) {
+          console.error('D1 query error:', error);
+        }
       }
+      
+      return DEMO_USERS.find(u => u.id === id) || null;
+    },
+
+    /**
+     * Create a new user
+     */
+    create: async (data: { 
+      email: string; 
+      password_hash: string; 
+      name?: string; 
+      role?: string;
+    }, env: Env): Promise<User | null> => {
+      const d1 = getDb(env);
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
+      const role = data.role || 'USER';
+      
+      if (d1) {
+        try {
+          await d1.prepare(
+            'INSERT INTO users (id, email, password_hash, name, role, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+          ).bind(id, data.email, data.password_hash, data.name || null, role, now).run();
+          
+          return {
+            id,
+            email: data.email,
+            password_hash: data.password_hash,
+            name: data.name || null,
+            role,
+            created_at: now,
+          };
+        } catch (error) {
+          console.error('D1 insert error:', error);
+        }
+      }
+      
       return null;
     },
-    
-    findMany: async (params?: { where?: { role?: string } }) => {
-      if (params?.where?.role) {
-        return demoUsers.filter(u => u.role === params.where!.role);
+  },
+
+  messages: {
+    /**
+     * Create a new message
+     */
+    create: async (data: {
+      name: string;
+      email: string;
+      subject?: string;
+      content: string;
+      user_id: string;
+    }, env: Env): Promise<Message | null> => {
+      const d1 = getDb(env);
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
+      
+      if (d1) {
+        try {
+          await d1.prepare(
+            'INSERT INTO messages (id, name, email, subject, content, read, archived, created_at, user_id) VALUES (?, ?, ?, ?, ?, 0, 0, ?, ?)'
+          ).bind(id, data.name, data.email, data.subject || '', data.content, now, data.user_id).run();
+          
+          return {
+            id,
+            name: data.name,
+            email: data.email,
+            subject: data.subject || null,
+            content: data.content,
+            read: 0,
+            archived: 0,
+            created_at: now,
+            user_id: data.user_id,
+          };
+        } catch (error) {
+          console.error('D1 insert error:', error);
+        }
       }
-      return demoUsers;
-    },
-    
-    create: async (data: { email: string; password: string; name?: string; role?: string }) => {
-      const newUser: User = {
-        id: Date.now().toString(),
+      
+      // Fallback to in-memory
+      const message: Message = {
+        id,
+        name: data.name,
         email: data.email,
-        password: data.password,
-        name: data.name || null,
-        role: data.role || 'USER'
+        subject: data.subject || null,
+        content: data.content,
+        read: 0,
+        archived: 0,
+        created_at: now,
+        user_id: data.user_id,
       };
-      demoUsers.push(newUser);
-      return newUser;
-    }
-  }
+      DEMO_MESSAGES.push(message);
+      return message;
+    },
+
+    /**
+     * Get all messages
+     */
+    findAll: async (env: Env): Promise<Message[]> => {
+      const d1 = getDb(env);
+      
+      if (d1) {
+        try {
+          const result = await d1.prepare(
+            'SELECT * FROM messages ORDER BY created_at DESC'
+          ).all<Message>();
+          return result.results || [];
+        } catch (error) {
+          console.error('D1 query error:', error);
+        }
+      }
+      
+      return DEMO_MESSAGES;
+    },
+  },
+
+  subscribers: {
+    /**
+     * Create or update a subscriber
+     */
+    upsert: async (data: {
+      email: string;
+      name?: string;
+    }, env: Env): Promise<Subscriber | null> => {
+      const d1 = getDb(env);
+      const id = crypto.randomUUID();
+      const now = new Date().toISOString();
+      
+      if (d1) {
+        try {
+          // Try to update first
+          const updateResult = await d1.prepare(
+            'UPDATE subscribers SET active = 1, unsubscribed_at = NULL WHERE email = ?'
+          ).bind(data.email).run();
+          
+          if (updateResult.success && (updateResult.meta?.rows_written || 0) > 0) {
+            const subscriber = await d1.prepare(
+              'SELECT * FROM subscribers WHERE email = ?'
+            ).bind(data.email).first<Subscriber>();
+            return subscriber || null;
+          }
+          
+          // Insert if not found
+          await d1.prepare(
+            'INSERT INTO subscribers (id, email, name, active, subscribed_at) VALUES (?, ?, ?, 1, ?)'
+          ).bind(id, data.email, data.name || null, now).run();
+          
+          return {
+            id,
+            email: data.email,
+            name: data.name || null,
+            active: 1,
+            subscribed_at: now,
+            unsubscribed_at: null,
+          };
+        } catch (error) {
+          console.error('D1 upsert error:', error);
+        }
+      }
+      
+      // Fallback to in-memory
+      const existing = DEMO_SUBSCRIBERS.find(s => s.email === data.email);
+      if (existing) {
+        existing.active = 1;
+        existing.unsubscribed_at = null;
+        return existing;
+      }
+      
+      const subscriber: Subscriber = {
+        id,
+        email: data.email,
+        name: data.name || null,
+        active: 1,
+        subscribed_at: now,
+        unsubscribed_at: null,
+      };
+      DEMO_SUBSCRIBERS.push(subscriber);
+      return subscriber;
+    },
+
+    /**
+     * Check if email is subscribed
+     */
+    findByEmail: async (email: string, env: Env): Promise<Subscriber | null> => {
+      const d1 = getDb(env);
+      
+      if (d1) {
+        try {
+          const result = await d1.prepare(
+            'SELECT * FROM subscribers WHERE email = ? AND active = 1'
+          ).bind(email).first<Subscriber>();
+          return result || null;
+        } catch (error) {
+          console.error('D1 query error:', error);
+        }
+      }
+      
+      return DEMO_SUBSCRIBERS.find(s => s.email === email && s.active === 1) || null;
+    },
+  },
 };
 
-// Helper to verify password (simple comparison for demo)
-// In production, use bcrypt.compare
+/**
+ * Simple password verification (for demo purposes)
+ * In production, use bcrypt.compare with proper hashing
+ */
 export async function verifyPassword(plainPassword: string, hashedPassword: string): Promise<boolean> {
-  // For demo purposes, accept 'admin123' as the plain password
-  // In production, use: import { compare } from 'bcryptjs'; return await compare(plainPassword, hashedPassword);
-  if (hashedPassword.startsWith('$2a$10$')) {
-    // This is a bcrypt hash - for demo, check against known password
-    // In production, use proper bcrypt comparison
+  // For demo users with plain text passwords
+  if (hashedPassword === 'admin123') {
     return plainPassword === 'admin123';
   }
+  
+  // For production, you would use bcrypt
+  // This requires the bcryptjs package in production
+  // import { compare } from 'bcryptjs';
+  // return await compare(plainPassword, hashedPassword);
+  
+  // Simple comparison for now (NOT SECURE FOR PRODUCTION)
   return plainPassword === hashedPassword;
 }

@@ -2,8 +2,15 @@ name = "mitrokit-ventures"
 compatibility_date = "2026-02-22"
 compatibility_flags = ["nodejs_compat"]
 
-[site]
-bucket = ".vercel/output/static"
+# D1 Database for Cloudflare Workers
+[[d1_databases]]
+binding = "DB"
+database_name = "mitrokit-ventures"
+database_id = "your-database-id-here"
 
 [vars]
-NEXT_PUBLIC_SITE_URL = "https://mitrokit-ventures.denis2s-projects.workers.dev"
+ENVIRONMENT = "production"
+
+# Secrets (set via wrangler secret put)
+# wrangler secret put JWT_SECRET
+# wrangler secret put ADMIN_PASSWORD
