@@ -1,4 +1,5 @@
 # Mitrokit Ventures ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
+## Admin Dashboard
 <img width="1920" height="1080" alt="Screenshot 2026-02-25 004519" src="https://github.com/user-attachments/assets/6313c59f-003c-4d36-ac21-9d2cbe276134" />
 
 Mitrokit Ventures is a modern, responsive business website built with Next.js 14, React, TypeScript, and Tailwind CSS. The website showcases a full-stack development agency with comprehensive sections for services, projects, testimonials, blog, FAQ, contact form, and more, along with an admin panel for content management.
