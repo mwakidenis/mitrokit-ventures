@@ -1,5 +1,9 @@
 name = "mitrokit-ventures"
 compatibility_date = "2026-02-22"
+compatibility_flags = ["nodejs_compat"]
+
+[site]
+bucket = ".cloudflare/output/static"
 
 [vars]
-NEXT_PUBLIC_SITE_URL = "https://mitrokit-ventures-llc.pages.dev/"
+NEXT_PUBLIC_SITE_URL = "https://mitrokit-ventures.denis2s-projects.workers.dev"
