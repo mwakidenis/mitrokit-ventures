@@ -1,16 +1,9 @@
-// src/app/api/repos/route.ts - Cloudflare Workers compatible
+// src/app/api/repos/route.ts - Vercel compatible
 import { NextResponse } from 'next/server';
 
-// Edge runtime for Cloudflare compatibility
-export const runtime = 'edge';
-
-// Get GitHub token from environment (Cloudflare binding or env var)
+// Get GitHub token from environment variables
 function getGitHubToken(): string | undefined {
-  // Try Cloudflare binding first
-  if (typeof process !== 'undefined' && process.env) {
-    return process.env.GITHUB_TOKEN;
-  }
-  return undefined;
+  return process.env.GITHUB_TOKEN;
 }
 
 export async function GET() {
@@ -19,18 +12,18 @@ export async function GET() {
   try {
     if (!GITHUB_TOKEN) {
       return NextResponse.json(
-        { error: 'GitHub token not configured' },
+        { error: 'GitHub token not configured. Please set GITHUB_TOKEN in environment variables.' },
         { status: 500 }
       );
     }
 
-    // Fetch repositories from GitHub using Cloudflare-compatible fetch
+    // Fetch repositories from GitHub
     const response = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100', {
       headers: {
         'Authorization': `Bearer ${GITHUB_TOKEN}`,
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'mitrokit-ventures',
-      },
+      }
     });
 
     if (!response.ok) {

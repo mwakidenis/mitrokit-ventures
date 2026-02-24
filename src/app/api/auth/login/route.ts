@@ -1,10 +1,7 @@
-// src/app/api/auth/login/route.ts - Cloudflare Workers compatible
+// src/app/api/auth/login/route.ts
 import { NextResponse } from 'next/server';
 import { createToken } from '@/lib/jwt';
-import { db, verifyPassword } from '@/lib/db';
-
-// Edge runtime for Cloudflare compatibility
-export const runtime = 'edge';
+import { verifyPassword } from '@/lib/db';
 
 // Demo users for development (no database required)
 const DEMO_USERS = [

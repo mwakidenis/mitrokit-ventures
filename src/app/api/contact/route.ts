@@ -1,9 +1,6 @@
-// src/app/api/contact/route.ts - Cloudflare Workers compatible
+// src/app/api/contact/route.ts
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-
-// Edge runtime for Cloudflare compatibility
-export const runtime = 'edge';
 
 // Validate email format
 function validateEmail(email: string): boolean {

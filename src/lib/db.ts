@@ -1,5 +1,5 @@
-// src/lib/db.ts - Cloudflare D1 Database Utility
-// Uses D1 binding for Cloudflare Workers, falls back to mock for development
+// src/lib/db.ts - Database Utility
+// Uses Vercel Postgres / database or falls back to in-memory for development
 
 interface Env {
   mitrokit_ventures: D1Database;
@@ -62,10 +62,10 @@ function getDb(env: Env): D1Database | null {
 }
 
 /**
- * Check if we're running in Cloudflare Workers environment
+ * Check if we're running in a serverless environment
  */
-function isCloudflare(): boolean {
-  return typeof process === 'undefined' || !process.env.VERCEL;
+function isServerless(): boolean {
+  return !!process.env.VERCEL || !!process.env.NEXT_RUNTIME;
 }
 
 /**

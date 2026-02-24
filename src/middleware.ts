@@ -1,4 +1,4 @@
-// src/middleware.ts - Cloudflare Workers compatible middleware
+// src/middleware.ts - Authentication middleware
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 

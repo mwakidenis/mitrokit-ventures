@@ -11,8 +11,15 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'github.com',
+      },
     ],
-    unoptimized: true, // Required for Cloudflare
   },
   trailingSlash: false,
   poweredByHeader: false,
@@ -23,11 +30,6 @@ const nextConfig = {
   },
   eslint: {
     ignoreDuringBuilds: true,
-  },
-  
-  // Cloudflare Workers experimental config
-  experimental: {
-    // No serverActions - not needed for API routes
   },
 }
 
