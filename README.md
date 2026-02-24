@@ -1,5 +1,5 @@
 # Mitrokit Ventures ![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
-<img width="1920" height="1080" alt="Screenshot 2026-02-19 225437" src="https://github.com/user-attachments/assets/503bbc9c-5c29-45cb-8225-415680c07837" />
+<img width="1920" height="1080" alt="Screenshot 2026-02-25 004519" src="https://github.com/user-attachments/assets/6313c59f-003c-4d36-ac21-9d2cbe276134" />
 
 Mitrokit Ventures is a modern, responsive business website built with Next.js 14, React, TypeScript, and Tailwind CSS. The website showcases a full-stack development agency with comprehensive sections for services, projects, testimonials, blog, FAQ, contact form, and more, along with an admin panel for content management.
 
@@ -29,7 +29,8 @@ Mitrokit Ventures is a modern, responsive business website built with Next.js 14
 **Founder/Author**: Mwaki Denis
 
 ## Features
-<img width="1920" height="1080" alt="Screenshot 2026-02-19 155025" src="https://github.com/user-attachments/assets/5dfbc55a-f3d7-4bd5-b1d8-6309463dbe6e" />
+<img width="1920" height="1080" alt="Screenshot 2026-02-25 004815" src="https://github.com/user-attachments/assets/d168a2d6-9614-4907-97bd-8d448feda160" />
+<img width="1920" height="1080" alt="Screenshot 2026-02-25 004956" src="https://github.com/user-attachments/assets/7bd615d1-81b7-4c72-bc46-a72f3bc315c4" />
 
 ### Frontend Features
 The website includes the following sections on the homepage:
