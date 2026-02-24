@@ -2,7 +2,7 @@
 // This file provides TypeScript types for Cloudflare Workers environment
 
 export interface Env {
-  DB: D1Database;
+  mitrokit_ventures: D1Database;
   JWT_SECRET?: string;
   ADMIN_PASSWORD?: string;
 }
@@ -53,7 +53,7 @@ export interface D1ExecResult {
 
 // Extend the global namespace for Cloudflare Workers
 declare global {
-  const DB: D1Database;
+  const mitrokit_ventures: D1Database;
   const JWT_SECRET: string;
   const ADMIN_PASSWORD: string;
 }

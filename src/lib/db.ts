@@ -2,7 +2,7 @@
 // Uses D1 binding for Cloudflare Workers, falls back to mock for development
 
 interface Env {
-  DB: D1Database;
+  mitrokit_ventures: D1Database;
 }
 
 // Type for user records
@@ -58,7 +58,7 @@ let DEMO_SUBSCRIBERS: Subscriber[] = [];
  * Get the D1 database binding from the environment
  */
 function getDb(env: Env): D1Database | null {
-  return env.DB || null;
+  return env.mitrokit_ventures || null;
 }
 
 /**

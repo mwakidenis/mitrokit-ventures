@@ -4,9 +4,9 @@ compatibility_flags = ["nodejs_compat"]
 
 # D1 Database for Cloudflare Workers
 [[d1_databases]]
-binding = "DB"
+binding = "mitrokit_ventures"
 database_name = "mitrokit-ventures"
-database_id = "your-database-id-here"
+database_id = "aebc2d6e-fee4-4333-99eb-d2113f312f27"
 
 [vars]
 ENVIRONMENT = "production"
