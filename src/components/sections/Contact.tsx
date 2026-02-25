@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Send, Mail, Phone, MapPin, Check, Loader2 } from 'lucide-react'
+// --- SAFE REBUILD START ---
+import { submitContactForm } from '@/actions/contact'
+// --- SAFE REBUILD END ---
 
 export default function Contact() {
   const [mounted, setMounted] = useState(false)
@@ -28,21 +31,23 @@ export default function Contact() {
     setError('')
 
     try {
-      // Simulate API call - replace with actual API endpoint
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // --- SAFE REBUILD START ---
+      // Use server action instead of direct API call
+      const result = await submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        content: formData.message,
+      })
       
-      // In production, this would be:
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData),
-      // })
-      
-      setIsSubmitted(true)
-      setFormData({ name: '', email: '', subject: '', message: '' })
-      
-      // Reset success message after 5 seconds
-      setTimeout(() => setIsSubmitted(false), 5000)
+      if (result.success) {
+        setIsSubmitted(true)
+        setFormData({ name: '', email: '', subject: '', message: '' })
+        setTimeout(() => setIsSubmitted(false), 5000)
+      } else {
+        setError(result.message)
+      }
+      // --- SAFE REBUILD END ---
     } catch (err) {
       setError('Failed to send message. Please try again.')
     } finally {

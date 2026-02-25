@@ -184,3 +184,27 @@ model BrandAsset {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// --- SAFE REBUILD START ---
+// Analytics model for tracking site metrics
+model Analytics {
+  id                  String   @id @default(cuid())
+  pageViews           Int      @default(0)
+  uniqueVisitors      Int      @default(0)
+  contactSubmissions  Int      @default(0)
+  newsletterSignups   Int      @default(0)
+  date                DateTime @default(now())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+// Rate limiting for spam prevention
+model RateLimit {
+  id        String   @id @default(cuid())
+  identifier String  // IP address or email
+  action    String   // contact-form, subscribe, etc.
+  count     Int      @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+// --- SAFE REBUILD END ---

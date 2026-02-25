@@ -10,47 +10,16 @@ import {
   TrendingUp,
   Eye,
   Heart,
-  Clock
+  Clock,
+  CheckCircle,
+  Trash2,
+  RefreshCw
 } from 'lucide-react'
+// --- SAFE REBUILD START ---
+import { getDashboardStats, markMessageAsRead, deleteMessage } from '@/actions/admin'
+// --- SAFE REBUILD END ---
 
-// Mock data - in production this would come from API
-const stats = [
-  { 
-    label: 'Total Projects', 
-    value: 12, 
-    icon: Folder, 
-    color: '#00F5FF',
-    change: '+2 this month'
-  },
-  { 
-    label: 'Blog Posts', 
-    value: 24, 
-    icon: FileText, 
-    color: '#00FFB2',
-    change: '+5 this month'
-  },
-  { 
-    label: 'Messages', 
-    value: 156, 
-    icon: MessageSquare, 
-    color: '#FF6A00',
-    change: '+23 this week'
-  },
-  { 
-    label: 'Subscribers', 
-    value: 1847, 
-    icon: Users, 
-    color: '#FFD000',
-    change: '+124 this month'
-  },
-]
-
-const recentMessages = [
-  { id: '1', name: 'John Doe', subject: 'Project Inquiry', date: '2 hours ago', read: false },
-  { id: '2', name: 'Sarah Smith', subject: 'Collaboration', date: '5 hours ago', read: false },
-  { id: '3', name: 'Mike Johnson', subject: 'Job Opportunity', date: '1 day ago', read: true },
-]
-
+// Mock data for projects
 const recentProjects = [
   { id: '1', title: 'Mpesa Billing System', views: 1234, likes: 89, status: 'Live' },
   { id: '2', title: 'HornBill CRM', views: 987, likes: 67, status: 'Live' },
@@ -59,46 +28,141 @@ const recentProjects = [
 
 export default function AdminDashboard() {
   const [mounted, setMounted] = useState(false)
+  // --- SAFE REBUILD START ---
+  const [stats, setStats] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  // --- SAFE REBUILD END ---
 
   useEffect(() => {
     setMounted(true)
+    // --- SAFE REBUILD START ---
+    fetchStats()
+    // --- SAFE REBUILD END ---
   }, [])
+
+  // --- SAFE REBUILD START ---
+  const fetchStats = async () => {
+    setLoading(true)
+    try {
+      const result = await getDashboardStats()
+      if (result.success && result.data) {
+        setStats([
+          { 
+            label: 'Total Messages', 
+            value: result.data.totalMessages, 
+            icon: MessageSquare, 
+            color: '#FF6A00',
+            change: `${result.data.unreadMessages} unread`
+          },
+          { 
+            label: 'Blog Posts', 
+            value: result.data.totalPosts, 
+            icon: FileText, 
+            color: '#00FFB2',
+            change: `${result.data.publishedPosts} published`
+          },
+          { 
+            label: 'Users', 
+            value: result.data.totalUsers, 
+            icon: Users, 
+            color: '#FFD000',
+            change: 'Active users'
+          },
+          { 
+            label: 'Projects', 
+            value: result.data.totalProjects, 
+            icon: Folder, 
+            color: '#00F5FF',
+            change: 'Total projects'
+          },
+        ])
+      }
+    } catch (error) {
+      console.error('Failed to fetch stats:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleRefresh = async () => {
+    setRefreshing(true)
+    await fetchStats()
+    setRefreshing(false)
+  }
+
+  const handleMarkAsRead = async (messageId: string) => {
+    await markMessageAsRead(messageId)
+    await fetchStats()
+  }
+
+  const handleDeleteMessage = async (messageId: string) => {
+    if (confirm('Are you sure you want to delete this message?')) {
+      await deleteMessage(messageId)
+      await fetchStats()
+    }
+  }
+  // --- SAFE REBUILD END ---
 
   if (!mounted) return null
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-gray-400">Welcome back! Here's what's happening with your site.</p>
+      {/* Header with refresh */}
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
+          <p className="text-gray-400">Welcome back! Here's what's happening with your site.</p>
+        </div>
+        {/* --- SAFE REBUILD START --- */}
+        <button
+          onClick={handleRefresh}
+          disabled={refreshing}
+          className="flex items-center gap-2 px-4 py-2 bg-background-panel border border-gray-800 rounded-lg text-gray-400 hover:text-white hover:border-neon-blue transition-colors disabled:opacity-50"
+        >
+          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
+        {/* --- SAFE REBUILD END --- */}
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="p-6 rounded-xl bg-background-panel border border-gray-800"
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div 
-                className="w-12 h-12 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: `${stat.color}20` }}
-              >
-                <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
-              </div>
-              <TrendingUp className="w-5 h-5 text-neon-green" />
+      {/* Stats Cards */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {[1,2,3,4].map((i) => (
+            <div key={i} className="p-6 rounded-xl bg-background-panel border border-gray-800 animate-pulse">
+              <div className="h-12 w-12 bg-gray-800 rounded-lg mb-4"></div>
+              <div className="h-4 bg-gray-800 rounded w-1/2 mb-2"></div>
+              <div className="h-8 bg-gray-800 rounded w-1/3"></div>
             </div>
-            <h3 className="text-gray-400 text-sm mb-1">{stat.label}</h3>
-            <p className="text-3xl font-bold text-white mb-2">{stat.value.toLocaleString()}</p>
-            <p className="text-neon-green text-sm">{stat.change}</p>
-          </motion.div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="p-6 rounded-xl bg-background-panel border border-gray-800"
+            >
+              <div className="flex items-start justify-between mb-4">
+                <div 
+                  className="w-12 h-12 rounded-lg flex items-center justify-center"
+                  style={{ backgroundColor: `${stat.color}20` }}
+                >
+                  <stat.icon className="w-6 h-6" style={{ color: stat.color }} />
+                </div>
+                <TrendingUp className="w-5 h-5 text-neon-green" />
+              </div>
+              <h3 className="text-gray-400 text-sm mb-1">{stat.label}</h3>
+              <p className="text-3xl font-bold text-white mb-2">{stat.value.toLocaleString()}</p>
+              <p className="text-neon-green text-sm">{stat.change}</p>
+            </motion.div>
+          ))}
+        </div>
+      )}
 
       {/* Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -113,27 +177,14 @@ export default function AdminDashboard() {
             <h2 className="text-xl font-bold text-white">Recent Messages</h2>
             <a href="/admin/messages" className="text-neon-blue text-sm hover:underline">View All</a>
           </div>
+          {/* --- SAFE REBUILD START --- */}
           <div className="space-y-4">
-            {recentMessages.map((message) => (
-              <div 
-                key={message.id}
-                className={`p-4 rounded-lg bg-background-deep border ${message.read ? 'border-gray-800' : 'border-neon-blue/50'}`}
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-white font-medium">{message.name}</p>
-                    <p className="text-gray-400 text-sm">{message.subject}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-gray-500 text-xs">{message.date}</p>
-                    {!message.read && (
-                      <span className="inline-block w-2 h-2 rounded-full bg-neon-blue mt-2" />
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+            {/* Messages would come from stats in production */}
+            <div className="p-4 rounded-lg bg-background-deep border border-gray-800">
+              <p className="text-gray-400 text-sm">Loading messages...</p>
+            </div>
           </div>
+          {/* --- SAFE REBUILD END --- */}
         </motion.div>
 
         {/* Recent Projects */}
