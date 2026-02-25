@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Clock, Heart, MessageCircle, ChevronRight, Search, Tag } from 'lucide-react'
+import { Calendar, Clock, Heart, MessageCircle, ChevronRight, Search, Tag, X } from 'lucide-react'
 
 const blogPosts = [
   {
@@ -18,6 +18,7 @@ const blogPosts = [
     comments: 18,
     category: 'Cloud',
     color: '#00F5FF',
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=200&fit=crop',
   },
   {
     id: 2,
@@ -32,6 +33,7 @@ const blogPosts = [
     comments: 12,
     category: 'Development',
     color: '#00FFB2',
+    coverImage: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&h=200&fit=crop',
   },
   {
     id: 3,
@@ -46,6 +48,7 @@ const blogPosts = [
     comments: 24,
     category: 'Security',
     color: '#FF6A00',
+    coverImage: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&h=200&fit=crop',
   },
   {
     id: 4,
@@ -60,6 +63,7 @@ const blogPosts = [
     comments: 31,
     category: 'AI/ML',
     color: '#39FF14',
+    coverImage: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=200&fit=crop',
   },
 ]
 
@@ -113,9 +117,24 @@ export default function Blog() {
               placeholder="Search articles..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-background-panel border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:border-neon-blue focus:outline-none transition-colors"
+              className="w-full pl-12 pr-12 py-3 bg-background-panel border border-gray-800 rounded-lg text-white placeholder-gray-500 focus:border-neon-blue focus:outline-none transition-colors"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
+
+          {/* Results Info */}
+          {searchQuery && (
+            <p className="text-center text-gray-400 text-sm">
+              Showing {filteredPosts.length} result{filteredPosts.length !== 1 ? 's' : ''} for '{searchQuery}'
+            </p>
+          )}
 
           {/* Tags */}
           <div className="flex flex-wrap justify-center gap-2">
@@ -137,7 +156,13 @@ export default function Blog() {
         </div>
 
         {/* Blog Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* --- MODIFICATION START --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" style={{
+          display: 'grid',
+          gridAutoFlow: 'dense',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        }}>
+        {/* --- MODIFICATION END --- */}
           {filteredPosts.map((post, index) => (
             <motion.article
               key={post.id}
@@ -146,6 +171,18 @@ export default function Blog() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               className="group relative p-6 rounded-xl bg-background-panel border border-gray-800 hover:border-neon-blue transition-all duration-300 overflow-hidden"
+              style={{
+                transform: 'scale(1)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.025)'
+                e.currentTarget.style.boxShadow = `0 0 20px ${post.color}40, 0 0 40px ${post.color}20`
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
             >
               {/* Hover Glow */}
               <div 
@@ -154,6 +191,26 @@ export default function Blog() {
                   background: `radial-gradient(circle at center, ${post.color}10 0%, transparent 70%)`,
                 }}
               />
+
+              {/* Thumbnail */}
+              {post.coverImage && (
+                <div 
+                  className="mb-4 rounded-lg overflow-hidden -mt-2 -mx-2"
+                  style={{
+                    height: '120px',
+                    backgroundImage: `url(${post.coverImage})`,
+                    backgroundSize: '100%',
+                    backgroundPosition: 'center',
+                    transition: 'background-size 0.3s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundSize = '110%'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundSize = '100%'
+                  }}
+                />
+              )}
 
               {/* Category Badge */}
               <div className="flex items-center gap-2 mb-4">
@@ -165,9 +222,9 @@ export default function Blog() {
                 </span>
               </div>
 
-              {/* Title */}
-              <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-neon-blue transition-colors">
-                {post.title}
+              {/* Title - Clickable */}
+              <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-neon-blue transition-colors cursor-pointer">
+                <a href={`#post-${post.id}`}>{post.title}</a>
               </h3>
 
               {/* Excerpt */}
@@ -190,7 +247,7 @@ export default function Blog() {
               {/* Meta Info */}
               <div className="flex items-center justify-between text-sm text-gray-500">
                 <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-1 uppercase text-xs tracking-wider">
                     <Calendar className="w-4 h-4" />
                     {new Date(post.date).toLocaleDateString()}
                   </span>
@@ -225,12 +282,12 @@ export default function Blog() {
         {/* Empty State */}
         {filteredPosts.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-400">No articles found matching your criteria.</p>
+            <p className="text-gray-400 text-lg mb-4">No articles found matching your criteria.</p>
             <button
               onClick={() => { setSelectedTag('All'); setSearchQuery(''); }}
-              className="mt-4 text-neon-green hover:underline"
+              className="px-6 py-2 bg-neon-green text-background-primary font-medium rounded-lg hover:bg-neon-blue transition-colors"
             >
-              Clear Filters
+              Clear Search
             </button>
           </div>
         )}
