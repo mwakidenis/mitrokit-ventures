@@ -114,7 +114,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-white font-semibold">Phone</h4>
-                  <p className="text-gray-400">+1 234 567 890</p>
+                  <p className="text-gray-400">+254 798 750 585</p>
                   <p className="text-gray-500 text-sm">Mon-Fri from 9am to 6pm</p>
                 </div>
               </div>
