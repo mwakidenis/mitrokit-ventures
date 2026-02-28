@@ -54,7 +54,6 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
           >
-            https://res.cloudinary.com/dqv8dlj2s/image/upload/v1772276752/IMG_20251220_111730_cqlgfo.jpg
             
             <h3 className="text-2xl font-bold text-white mb-6">
               Building the Future with Technology
