@@ -76,6 +76,14 @@ model BlogPost {
   comments    Comment[]
 }
 
+enum MessageStatus {
+  PENDING
+  READ
+  REPLIED
+  SPAM
+  ARCHIVED
+}
+
 // Comment model for blog posts
 model Comment {
   id        String   @id @default(cuid())
