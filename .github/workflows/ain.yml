@@ -1,0 +1,106 @@
+stream-utils
+unpipe
+Repository navigation
+Code
+Issues
+Pull requests
+Agents
+Actions
+Security and quality
+Insights
+stream-utils
+unpipe
+Public
+Go to file
+t
+T
+dougwilson
+dougwilson
+build: eslint-plugin-import@2.13.0
+a69045d
+ · 
+8 years ago
+Name		
+test
+lint: use standard style
+10 years ago
+.eslintignore
+lint: use standard style
+10 years ago
+.eslintrc
+lint: use standard style
+10 years ago
+.gitignore
+build: support Node.js 8.x
+9 years ago
+.travis.yml
+build: support Node.js 10.x
+8 years ago
+HISTORY.md
+1.0.0
+11 years ago
+LICENSE
+1.0.0
+11 years ago
+README.md
+docs: update Node.js download link
+10 years ago
+index.js
+lint: use standard style
+10 years ago
+package.json
+build: eslint-plugin-import@2.13.0
+8 years ago
+Repository files navigation
+README
+MIT license
+unpipe
+NPM Version NPM Downloads Node.js Version Build Status Test Coverage
+
+Unpipe a stream from all destinations.
+
+Installation
+This is a Node.js module available through the npm registry. Installation is done using the npm install command:
+
+$ npm install unpipe
+API
+var unpipe = require('unpipe')
+unpipe(stream)
+Unpipes all destinations from a given stream. With stream 2+, this is equivalent to stream.unpipe(). When used with streams 1 style streams (typically Node.js 0.8 and below), this module attempts to undo the actions done in stream.pipe(dest).
+
+License
+MIT
+
+About
+Unpipe a stream from all destinations
+
+Topics
+Resources
+Readme
+MIT license
+Activity
+Custom properties
+Stars
+22 stars
+Watchers
+3 watching
+Forks
+4 forks
+Report repository
+Releases
+1tag
+Packages
+No packages published
+Used by
+34M
+ (34M)
+@beyondessential@joseokungu@qungtai@jeremias-abbud@tidynotebook
++ 33,621,042
+Contributors
+1
+ (1)
+@dougwilson
+dougwilsonDouglas Wilson
+Languages
+JavaScript
+100%
